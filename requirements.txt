@@ -1,0 +1,2 @@
+ao3_api
+discord.py==1.6.0

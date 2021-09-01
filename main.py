@@ -2,8 +2,14 @@
 import discord
 import random
 from discord.ext import commands
+import os
 
-from config import *
+
+try:
+    from boto.s3.connection import S3Connection
+    token = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
+except:
+    from config import *
 
 import AO3
 

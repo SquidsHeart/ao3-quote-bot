@@ -3,12 +3,8 @@ import discord
 import random
 from discord.ext import commands
 import os
-import boto
 
-
-from boto.s3.connection import S3Connection
-token = S3Connection(os.environ['S3_KEY'], os.environ['S3_SECRET'])
-#this is stolen straight out the docs. I refuse to learn anything.
+token = os.environ.get("token")
 
 import AO3
 

@@ -8,7 +8,7 @@ token = os.environ.get("token")
 
 import AO3
 
-bot = commands.Bot(command_prefix="randquote ")
+bot = commands.Bot(command_prefix=["randquote ", "Randquote", "r!"])
 
 @bot.event
 async def on_ready():

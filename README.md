@@ -1,7 +1,7 @@
 # ao3-quote-bot
 A discord bot to pull a random AO3 quote
 
-Put your token into config_example.py and change it's name to config.py
+This bot is designed to run on heruko. Create a config var called token, with the value being your discord bot token.
 
 Run randquote archive {tag to search} to get a random quote.
 

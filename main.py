@@ -1,20 +1,22 @@
 
 import discord
 import random
+from discord import message
 from discord.ext import commands
+
 import os
 
 token = os.environ.get("token")
 
 import AO3
 
-bot = commands.Bot(command_prefix=["randquote ", "Randquote ", "r!", "R!", "r! ", "R! "])
+bot = commands.Bot(command_prefix=["r!", "R!", "r! ", "R! "])
 
 @bot.event
 async def on_ready():
     print("Bot's up!")
     
-@bot.command()
+@bot.command(name="archive", help="Fetches a random quote")
 async def archive(ctx, tag="dreamsmp"):
     search_list = []
     search = AO3.Search(any_field=tag)
@@ -53,5 +55,12 @@ async def archive(ctx, tag="dreamsmp"):
     except:
         await ctx.send("THIS IS A MESSAGE FROM THE BOT CREATOR TELLING U SOMETHING BROKE. NOT A QUOTE.")
 
+@bot.command(name="wave", help="Waves the attached image")
+async def wave(ctx):
+    try:
+        image = message.attachments[0].url
+        await ctx.send("krikienoid.github.io/flagwaver/#?src=" + image)
+    except:
+        await ctx.send("not a valid option!")
 
 bot.run(token)

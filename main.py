@@ -1,12 +1,15 @@
 
 import discord
-import random
 from discord import message
 from discord.ext import commands
+
+import random
+import urllib.parse
 
 import os
 
 token = os.environ.get("token")
+
 
 import AO3
 
@@ -58,9 +61,14 @@ async def archive(ctx, tag="dreamsmp"):
 @bot.command(name="wave", help="Waves the attached image")
 async def wave(ctx):
     try:
-        image = message.attachments[0].url
-        await ctx.send("krikienoid.github.io/flagwaver/#?src=" + image)
-    except:
+        image = ctx.message.attachments[0].url
+        image = image.replace("cdn", "media")
+        image = image.replace("com", "net")
+        image = urllib.parse.quote_plus(image)
+        url = "https://krikienoid.github.io/flagwaver/#?src=" + image
+        embed=discord.Embed(title="Flag!", url=url, color=0xFFC7C4)
+        await ctx.send(embed=embed)
+    except SyntaxError:
         await ctx.send("not a valid option!")
 
 bot.run(token)

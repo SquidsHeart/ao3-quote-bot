@@ -8,6 +8,8 @@ import urllib.parse
 
 import os
 
+from requests import NullHandler
+
 token = os.environ.get("token")
 
 
@@ -20,9 +22,11 @@ async def on_ready():
     print("Bot's up!")
     
 @bot.command(name="archive", help="Fetches a random quote")
-async def archive(ctx, tag="dreamsmp"):
+async def archive(ctx, *tags):
+    if not tags:
+        tags = ["dream smp"]
     search_list = []
-    search = AO3.Search(any_field=tag)
+    search = AO3.Search(any_field=tags)
     search.update()
     for i in search.results:
         search_list.append(i)

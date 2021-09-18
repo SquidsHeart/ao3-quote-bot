@@ -62,6 +62,26 @@ async def archive(ctx, *tags):
     except:
         await ctx.send("THIS IS A MESSAGE FROM THE BOT CREATOR TELLING U SOMETHING BROKE. NOT A QUOTE.")
 
+@bot.command(name="story", help="Allows you to read the story: r!story \"story example\" [chapter number]")
+async def story(ctx, work, chapter = 1):
+    chapter = chapter - 1
+    search = AO3.Search(title=work)
+    search.update()
+    if len(search.results) != 0:
+        search_result = search.results[0]
+        chosen_work_id = search_result.id
+        chosen_work = AO3.Work(chosen_work_id)
+
+        work = chosen_work.chapters[chapter]
+        text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
+        try:
+            await ctx.send(text)
+        except:
+            await ctx.send("Unfortunately this piece is too large! Get a life and try a smaller one.")
+    else:
+        await ctx.send("Dumbass this ain't a thing")
+
+
 @bot.command(name="wave", help="Waves the attached image")
 async def wave(ctx):
     try:

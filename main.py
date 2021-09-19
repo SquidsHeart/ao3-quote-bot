@@ -61,15 +61,15 @@ async def archive(ctx, *tags):
             i = "\*"
         new_sentence = new_sentence + i
 
-    sentence = new_sentence + "\n - ***" + work.title + "***"
+    sentence = new_sentence + "\n - ***" + work.title + " - work id: " + work_id +"***"
 
     try:
         await ctx.send(sentence)
     except:
         await ctx.send("THIS IS A MESSAGE FROM THE BOT CREATOR TELLING U SOMETHING BROKE. NOT A QUOTE.")
 
-@bot.command(name="story", help="Allows you to read the story: r!story (story example) [chapter number] [part number]")
-async def story(ctx, work, chapter = 1, part=1):
+@bot.command(name="story", help="Allows you to read the story: r!story (story example) [chapter number] [confirm]]")
+async def story(ctx, work, chapter = 1, confirm="false"):
     chapter = chapter - 1
     search = AO3.Search(title=work)
     search.update()
@@ -79,14 +79,14 @@ async def story(ctx, work, chapter = 1, part=1):
         chosen_work = AO3.Work(chosen_work_id)
         work = chosen_work.chapters[chapter]
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
-        try:
-            for i in chunk_splitter(text, 2000):
+        if len(text) < 5000 and confirm=="yes":
+            for i in chunk_splitter(text, 5000):
                 await ctx.send(i)
                 time.sleep(2)
-        except:
-            await ctx.send("Unfortunately this piece is too large! Get a life and try a smaller one.")
+        else:
+            await ctx.send("This chapter is over 5,000 characters, if you REALLY want to read it set confirm to true")
     else:
-        await ctx.send("Dumbass this ain't a thing")
+        await ctx.send("this ain't a thing")
 
 
 @bot.command(name="wave", help="Waves the attached image")

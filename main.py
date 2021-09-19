@@ -61,7 +61,7 @@ async def archive(ctx, *tags):
             i = "\*"
         new_sentence = new_sentence + i
 
-    sentence = new_sentence + "\n - ***" + work.title + " - work id: " + work_id +"***"
+    sentence = new_sentence + "\n - ***" + work.title + " - work id: " + str(work_id) + "***"
 
     try:
         await ctx.send(sentence)
@@ -79,7 +79,7 @@ async def story(ctx, work, chapter = 1, confirm="false"):
         chosen_work = AO3.Work(chosen_work_id)
         work = chosen_work.chapters[chapter]
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
-        if len(text) < 5000 and confirm=="yes":
+        if len(text) < 5000 and confirm=="true":
             for i in chunk_splitter(text, 5000):
                 await ctx.send(i)
                 time.sleep(2)

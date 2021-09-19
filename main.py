@@ -27,7 +27,7 @@ def chunk_splitter(text, n):
         chunks.append(text[i:i+n])
     return chunks
 
-@bot.command(name="archive", help="Fetches a random quote")
+@bot.command(name="archive", help="Fetches a random quote: r!archive (search term) [search term 2, 3, ...]")
 async def archive(ctx, *tags):
     if not tags:
         tags = ["dream smp"]
@@ -101,5 +101,24 @@ async def wave(ctx):
         await ctx.send(embed=embed)
     except SyntaxError:
         await ctx.send("not a valid option!")
+
+@bot.command(name="idsearch", help="does what the search does but by id: r!idsearch [id] [chapter number] [confirmation]")
+async def idsearch(ctx, id, chapter, confirm="false"):
+    valid = False
+    try:
+        work = AO3.Work(int(id))
+        valid = True
+    except:
+        await ctx.send("not a valid work id!")
+    if valid:
+        text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters - 1) + "***\n" +  work.text
+        if len(text) < 5000 and confirm=="true":
+            for i in chunk_splitter(text, 5000):
+                await ctx.send(i)
+                time.sleep(2)
+        else:
+            await ctx.send("This chapter is over 5,000 characters, if you REALLY want to read it set confirm to true")
+        pass
+
 
 bot.run(token)

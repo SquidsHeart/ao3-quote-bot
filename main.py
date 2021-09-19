@@ -7,11 +7,11 @@ import random
 import urllib.parse
 
 import os
+import time
 
 from requests import NullHandler
 
 token = os.environ.get("token")
-
 
 import AO3
 
@@ -20,7 +20,13 @@ bot = commands.Bot(command_prefix=["r!", "R!", "r! ", "R! "])
 @bot.event
 async def on_ready():
     print("Bot's up!")
-    
+
+def chunk_splitter(text, n):
+    chunks = []
+    for i in range(0, len(text), n):
+        chunks.append(text[i:i+n])
+    return chunks
+
 @bot.command(name="archive", help="Fetches a random quote")
 async def archive(ctx, *tags):
     if not tags:
@@ -62,8 +68,8 @@ async def archive(ctx, *tags):
     except:
         await ctx.send("THIS IS A MESSAGE FROM THE BOT CREATOR TELLING U SOMETHING BROKE. NOT A QUOTE.")
 
-@bot.command(name="story", help="Allows you to read the story: r!story \"story example\" [chapter number]")
-async def story(ctx, work, chapter = 1):
+@bot.command(name="story", help="Allows you to read the story: r!story (story example) [chapter number] [part number]")
+async def story(ctx, work, chapter = 1, part=1):
     chapter = chapter - 1
     search = AO3.Search(title=work)
     search.update()
@@ -71,11 +77,12 @@ async def story(ctx, work, chapter = 1):
         search_result = search.results[0]
         chosen_work_id = search_result.id
         chosen_work = AO3.Work(chosen_work_id)
-
         work = chosen_work.chapters[chapter]
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
         try:
-            await ctx.send(text)
+            for i in chunk_splitter(text, 2000):
+                await ctx.send(i)
+                time.sleep(2)
         except:
             await ctx.send("Unfortunately this piece is too large! Get a life and try a smaller one.")
     else:

@@ -84,7 +84,7 @@ async def story(ctx, work, chapter = "1", confirm="false"):
         work = chosen_work.chapters[chapter]
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
         if len(text) < 5000 or confirm=="true":
-            for i in chunk_splitter(text, 5000):
+            for i in chunk_splitter(text, 2000):
                 await ctx.send(i)
                 time.sleep(2)
         else:
@@ -121,7 +121,7 @@ async def idsearch(ctx, id, chapter="1", confirm="false", **kwargs):
     if valid:
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters - 1) + "***\n" +  work.text
         if len(text) < 5000 or confirm == "true":
-            for i in chunk_splitter(text, 5000):
+            for i in chunk_splitter(text, 2000):
                 await ctx.send(i)
                 time.sleep(2)
         else:

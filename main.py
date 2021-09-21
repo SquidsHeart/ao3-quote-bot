@@ -11,9 +11,10 @@ import time
 
 from requests import NullHandler
 
+import AO3
+
 token = os.environ.get("token")
 
-import AO3
 
 bot = commands.Bot(command_prefix=["r!", "R!", "r! ", "R! "])
 
@@ -69,8 +70,11 @@ async def archive(ctx, *tags):
         await ctx.send("THIS IS A MESSAGE FROM THE BOT CREATOR TELLING U SOMETHING BROKE. NOT A QUOTE.")
 
 @bot.command(name="story", help="Allows you to read the story: r!story (story example) [chapter number] [confirm]]")
-async def story(ctx, work, chapter = 1, confirm="false"):
-    chapter = chapter - 1
+async def story(ctx, work, chapter = "1", confirm="false"):
+    try:
+        chapter = int(chapter) - 1
+    except:
+        chapter = 0
     search = AO3.Search(title=work)
     search.update()
     if len(search.results) != 0:
@@ -79,7 +83,7 @@ async def story(ctx, work, chapter = 1, confirm="false"):
         chosen_work = AO3.Work(chosen_work_id)
         work = chosen_work.chapters[chapter]
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
-        if len(text) < 5000 and confirm=="true":
+        if len(text) < 5000 or confirm=="true":
             for i in chunk_splitter(text, 5000):
                 await ctx.send(i)
                 time.sleep(2)
@@ -103,7 +107,11 @@ async def wave(ctx):
         await ctx.send("not a valid option!")
 
 @bot.command(name="idsearch", help="does what the search does but by id: r!idsearch [id] [chapter number] [confirmation]")
-async def idsearch(ctx, id, chapter, confirm="false"):
+async def idsearch(ctx, id, chapter="1", confirm="false", **kwargs):
+    try:
+        chapter = int(chapter) - 1
+    except:
+        chapter = 0
     valid = False
     try:
         work = AO3.Work(int(id))
@@ -112,7 +120,7 @@ async def idsearch(ctx, id, chapter, confirm="false"):
         await ctx.send("not a valid work id!")
     if valid:
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters - 1) + "***\n" +  work.text
-        if len(text) < 5000 and confirm=="true":
+        if len(text) < 5000 or confirm == "true":
             for i in chunk_splitter(text, 5000):
                 await ctx.send(i)
                 time.sleep(2)

@@ -119,7 +119,11 @@ async def idsearch(ctx, id, chapter="1", confirm="false", **kwargs):
     except:
         await ctx.send("not a valid work id!")
     if valid:
-        text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters - 1) + "***\n" +  work.text
+        try:
+            worktext = work.chapters[chapter].text
+        except:
+            worktext = work.text[1]
+        text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters - 1) + "***\n" +  worktext
         if len(text) < 5000 or confirm == "true":
             for i in chunk_splitter(text, 2000):
                 await ctx.send(i)

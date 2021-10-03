@@ -3,6 +3,8 @@ A discord bot originally designed to pull a random AO3 quote with a little extra
 
 This bot is designed to run on heruko. Create a config var called token, with the value being your discord bot token.
 
+If you'd rather not use heruko, uncomment line 17 and insert your own quote.
+
 Run r! archive {tag to search} to get a random quote.
 randquote can be replaced with "r!, R!, r! or R!"
 

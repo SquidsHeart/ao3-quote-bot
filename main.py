@@ -14,7 +14,7 @@ from requests import NullHandler
 import AO3
 
 token = os.environ.get("token")
-
+#token = ""
 
 bot = commands.Bot(command_prefix=["r!", "R!", "r! ", "R! "])
 

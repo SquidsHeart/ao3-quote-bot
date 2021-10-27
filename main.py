@@ -15,6 +15,10 @@ import AO3
 
 token = os.environ.get("token")
 #token = ""
+#### uncomment the value above and fill in your own token if you don't want to use evironment variables
+
+leader_board_dict = {}
+ 
 
 bot = commands.Bot(command_prefix=["r!", "R!", "r! ", "R! "])
 
@@ -22,15 +26,24 @@ bot = commands.Bot(command_prefix=["r!", "R!", "r! ", "R! "])
 async def on_ready():
     print("Bot's up!")
 
+"""
+def leader_board(id):
+    if id in leader_board_dict:
+        leader_board_dict[id] = leader_board_dict[id] + 1
+    else:
+        leader_board_dict.update({id: 1})
+"""        
+
 def chunk_splitter(text, n):
     chunks = []
     for i in range(0, len(text), n):
         chunks.append(text[i:i+n])
     return chunks
 
+
 @bot.command(name="archive", help="Fetches a random quote: r!archive (search term) [search term 2, 3, ...]")
 async def archive(ctx, *tags):
-    if not tags:
+    if len(tags) == 0:
         tags = ["dream smp"]
     search_list = []
     search = AO3.Search(any_field=tags)
@@ -83,12 +96,15 @@ async def story(ctx, work, chapter = "1", confirm="false"):
         chosen_work = AO3.Work(chosen_work_id)
         work = chosen_work.chapters[chapter]
         text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(chosen_work.nchapters - 1) + "***\n" +  work.text
-        if len(text) < 5000 or confirm=="true":
-            for i in chunk_splitter(text, 2000):
-                await ctx.send(i)
-                time.sleep(2)
+        if len(text) < 8000 or confirm=="true":
+            if len(text) > 15000 and not ctx.message.author.guild_permissions.administrator:
+                await ctx.send("This work is over 15,000 characters! you need admin to open it.")
+            else:
+                for i in chunk_splitter(text, 2000):
+                    await ctx.send(i)
+                    time.sleep(2)
         else:
-            await ctx.send("This chapter is over 5,000 characters, if you REALLY want to read it set confirm to true")
+            await ctx.send("This chapter is over 8,000 characters(" + str(len(text)) + " characters), if you REALLY want to read it set confirm to true")
     else:
         await ctx.send("this ain't a thing")
 
@@ -123,7 +139,7 @@ async def idsearch(ctx, id, chapter="1", confirm="false", **kwargs):
             worktext = work.chapters[chapter].text
         except:
             worktext = work.text[1]
-        text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters - 1) + "***\n" +  worktext
+        text = "***" + work.title + " - " + str(chapter + 1) + "/" + str(work.nchapters) + "***\n" +  worktext
         if len(text) < 5000 or confirm == "true":
             for i in chunk_splitter(text, 2000):
                 await ctx.send(i)
@@ -132,5 +148,14 @@ async def idsearch(ctx, id, chapter="1", confirm="false", **kwargs):
             await ctx.send("This chapter is over 5,000 characters, if you REALLY want to read it set confirm to true")
         pass
 
+"""
+@bot.command(name="leaderboard", help="Returns the current leaderboard")
+def leaderboard(ctx):
+    return False
+    leader_board_str = ""
+    for i in leader_board_dict.keys():
+        user = bot.get_user(i)
+        
+"""
 
 bot.run(token)
